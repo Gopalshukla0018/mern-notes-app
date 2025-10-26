@@ -8,7 +8,7 @@ const Home = () => {
   const [editContent, setEditContent] = useState("");
   const [editId, setEditId] = useState(null);
 
-  //  interface Note {
+ 
 
   const handleDelete = async (id) => {
     try {
