@@ -8,7 +8,7 @@ export const Navbar=()=>{
 
 const handleLogin=()=>{
     console.log("login clicked")
-    navigate("/login ")
+    navigate("/login")
 }
 const handleSignUp=()=>{
     console.log("SignUpclicked")
