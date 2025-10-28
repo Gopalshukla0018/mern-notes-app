@@ -1,5 +1,6 @@
 import react, { useEffect, useState } from "react";
 import API from "../features/api";
+
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [notesData, setNotesData] = useState();
@@ -7,9 +8,7 @@ const Home = () => {
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
   const [editId, setEditId] = useState(null);
-
- 
-
+  const [addPopup, setAddPopup] = useState(false);
   const handleDelete = async (id) => {
     try {
       const response = await API.delete(`/notes/${id}`);
@@ -29,12 +28,11 @@ const Home = () => {
 
   const handleUpdate = async () => {
     try {
-      const response = await API.put(`/notes/${editId}`, {
-        title: editTitle,
-        content: editContent,
-      });
+      const updatedData = { title: editTitle, content: editContent };
+      const response = await API.put(`/notes/${editId}`, updatedData);
 
       // Update UI without refetch
+
       setNotesData((prev) =>
         prev.map((note) =>
           note._id === editId
@@ -42,10 +40,33 @@ const Home = () => {
             : note
         )
       );
+      setEditTitle("");
+      setEditContent("")
 
       setEditPopup(false);
     } catch (error) {
       console.log("err in update", error);
+    }
+  };
+
+  const handleAddNote = () => {
+    setAddPopup(true);
+    console.log("btn clicker add");
+  };
+
+  const saveNote = async () => {
+    try {
+      const response = await API.post("/notes", {
+        title: editTitle,
+        content: editContent,
+      });
+      console.log("new note save successfully", response.data);
+      setNotesData((prev) => [response.data.data, ...prev]);
+      setAddPopup(false);
+      setEditTitle("");
+      setEditContent("");
+    } catch (error) {
+      console.log("error in save note ", error);
     }
   };
 
@@ -54,8 +75,8 @@ const Home = () => {
       try {
         setLoading(true);
         const res = await API.get("/notes");
-        console.log(res.data.notes);
-        setNotesData(res.data.notes);
+        console.log(res?.data?.notes);
+        setNotesData(res?.data?.notes);
       } catch (error) {
         console.log("error in fetchNotes", error);
       } finally {
@@ -70,6 +91,15 @@ const Home = () => {
         <p>loading...</p>
       ) : (
         <div className="flex gap-4 bg-gray-600 p-4">
+          <div>
+            <button
+              onClick={handleAddNote}
+              className="text-white cursor-pointer"
+            >
+              Add Note
+            </button>
+          </div>
+
           {notesData?.map((note, index) => (
             <div
               key={index}
@@ -89,67 +119,85 @@ const Home = () => {
                 ✏️
               </button>
 
-              <h1 className="font-bold text-lg mt-6">{note.title}</h1>
-              <p className="text-sm text-gray-700">{note.content}</p>
+              <h1 className="font-bold text-lg mt-6">{note?.title}</h1>
+              <p className="text-sm text-gray-700">{note?.content}</p>
             </div>
           ))}
         </div>
       )}
+      {/* // update popup */}
+      <div>
+        {editPopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-5 rounded shadow w-1/3">
+              <h2 className="font-bold text-lg mb-2">Edit Note</h2>
+              <input
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                className="w-full border p-2 mb-2"
+              />
+              <textarea
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                className="w-full border p-2 mb-3"
+              />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- <div>
-    {editPopup && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-        <div className="bg-white p-5 rounded shadow w-1/3">
-          <h2 className="font-bold text-lg mb-2">Edit Note</h2>
-          <input
-            value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
-            className="w-full border p-2 mb-2"
-          />
-          <textarea
-            value={editContent}
-            onChange={(e) => setEditContent(e.target.value)}
-            className="w-full border p-2 mb-3"
-          />
-
-          <div className="flex justify-end gap-2">
-            <button
-              onClick={() => setEditPopup(false)}
-              className="px-3 py-1 bg-gray-400 text-white"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleUpdate}
-              className="px-3 py-1 bg-blue-500 text-white"
-            >
-              Update
-            </button>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => {
+                    setEditPopup(false), setEditTitle(""), setEditContent("");
+                  }}
+                  className="px-3 py-1 bg-gray-400 text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpdate}
+                  className="px-3 py-1 bg-blue-500 text-white"
+                >
+                  Update
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
-    )}
-  </div>;
+      <div>
+        {addPopup && (
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-5 rounded shadow w-1/3">
+              <h2 className="font-bold text-lg mb-2">ADD Note</h2>
+              <input
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                className="w-full border p-2 mb-2"
+              />
+              <textarea
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                className="w-full border p-2 mb-3"
+              />
 
-
-
-
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setAddPopup(false)}
+                  className="px-3 py-1 bg-gray-400 text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={saveNote}
+                  className="px-3 py-1 bg-blue-500 text-white"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      ;
     </div>
-    
   );
 };
 

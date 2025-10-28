@@ -10,7 +10,7 @@ export const createNote = async (req, res) => {
         message: "title and content are required",
       });
     }
-
+    
     const note = await Note.create({
       title,
       content,
