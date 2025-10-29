@@ -1,29 +1,29 @@
 import React, { useState } from "react";
+import LoginPage from "./login";
+import { useNavigate } from "react-router-dom";
 import API from "../features/api";
-import { Link, useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const SignupPage = () => {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
   });
 
-  const handleOnchange = (e) => {
-    const { name, value } = e?.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("submited", formData);
-    const response = await API.post("/user/login", formData);
-    console.log("API response from login api ", response);
+    console.log(formData);
+    const response = await API.post("/user/register", formData);
     navigate("/");
   };
 
+  const handleOnchange = (e) => {
+    const { name, value } = e.target;
+    // console.log(formData);
 
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
     <div className="flex justify-center  border p-10 ">
@@ -35,8 +35,16 @@ const LoginPage = () => {
         <h1 className="justify-center">Login </h1>
 
         <input
+          type="string"
+          className="border border-b-black p-2"
+          placeholder="youe name"
+          onChange={(e) => handleOnchange(e)}
+          name="name"
+          value={formData.name}
+        />
+        <input
           type="email"
-          className="border border-b-black"
+          className="border border-b-black p-2"
           placeholder="youe@email.com"
           onChange={(e) => handleOnchange(e)}
           name="email"
@@ -46,16 +54,16 @@ const LoginPage = () => {
           name="password"
           value={formData.password}
           type="password"
-          className="border border-b-black"
+          className="border border-b-black p-2"
           placeholder="******"
           onChange={(e) => handleOnchange(e)}
         />
-        <button className="bg-yellow-500 ">submit</button>
-      <button  className="bg-yellow-600"><Link to={"/signup"}> Sign up</Link></button>
+        <button className="bg-yellow-500  " onClick={handleSubmit}>
+          submit
+        </button>
       </form>
-      
     </div>
   );
 };
 
-export default LoginPage;
+export default SignupPage;

@@ -1,41 +1,47 @@
-
-import Home from "./Componants/home"
+import Home from "./Componants/home";
 import LoginPage from "./Componants/login";
 import { Navbar } from "./Componants/Navbar";
-import { createBrowserRouter , RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import SignupPage from "./Componants/signupPage";
 
 
-const appRouter=createBrowserRouter([
+const appRouter = createBrowserRouter([
   {
-    path:"/",
+    path: "/",
     element: (
-    <>
-    <Navbar/>
-    <Home/> 
-    </>)
+      <>
+        <Navbar />
+        <Home />
+      </>
+    ),
   },
   {
-    path:"/login",
-    element:(
+    path: "/login",
+    element: (
       <>
-      <Navbar/>
-      <LoginPage/>
+        <Navbar />
+        <LoginPage />
       </>
-    )
-  }
-])
+    ),
+  },
+  {
+    path: "/signup",
+    element: (
+      <>
+        <Navbar />
+        <SignupPage />
+      </>
+    ),
+  },
+]);
 
-function App(){
-  return(
+function App() {
+  return (
     <>
-  
-  <main>
-   
-   <RouterProvider  router = {appRouter}/>
-  </main>
- 
-
+      <main>
+        <RouterProvider router={appRouter} />
+      </main>
     </>
-  )
+  );
 }
 export default App;
