@@ -23,13 +23,7 @@ const LoginPage = () => {
     navigate("/");
   };
 
-  //   try {
-  //     // const response = await API.post("/user/login", formData);
-  //      // console.log("API response from login api ",response)
 
-  //   } catch (error) {
-  //     console.log("error in login page logic", error);
-  //   }
 
   return (
     <div className="flex justify-center  border p-10 ">
