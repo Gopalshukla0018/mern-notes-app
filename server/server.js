@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import connectDB from "./database/db.js";
 import notesRouter from "./routes/notes.route.js";
 import cors from "cors";
+import userRoutes from "./routes/user.route.js";
 
 dotenv.config({ path: "./.env" });
 
@@ -17,6 +18,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 app.use("/api/notes", notesRouter);
+app.use("/api/user", userRoutes);
 
 app.use("/", (req, res) => {
   res.send("backend is running");
